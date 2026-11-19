@@ -97,7 +97,7 @@
         href: b.substackUrl,
         target: "_blank",
         rel: "noopener"
-      }, "Read the companion dossier on Substack"));
+      }, "Read the Companion Article on Substack"));
     }
     body.appendChild(links);
     art.appendChild(body);
@@ -148,7 +148,7 @@
     var submitBtn = form.querySelector("[type=submit]");
     var status = document.getElementById("form-status");
     var useFormspree = Boolean(cfg.formspreeEndpoint);
-    if (useFormspree) submitBtn.textContent = "Send inquiry";
+    if (useFormspree) submitBtn.textContent = "Send Inquiry";
 
     var params = new URLSearchParams(window.location.search);
     var preset = params.get("topic");
@@ -193,7 +193,7 @@
           form.reset();
           setStatus("Inquiry sent. Paul Larson will reply to " + reply + ".", "ok");
         }).catch(function () {
-          setStatus("The inquiry did not send. Check your connection and select Send inquiry again, or use Show email address to write directly.", "error");
+          setStatus("The inquiry did not send. Check your connection and select Send Inquiry again, or use Show Email Address to write directly.", "error");
         }).then(function () { submitBtn.disabled = false; });
         return;
       }
@@ -206,7 +206,7 @@
       window.location.href = "mailto:" + emailAddress() +
         "?subject=" + encodeURIComponent(subject) +
         "&body=" + encodeURIComponent(body);
-      setStatus("Your email app should open with the inquiry filled in. If it does not open, use Show email address to write directly.", "ok");
+      setStatus("Your email app should open with the inquiry filled in. If it does not, use Show Email Address to write directly.", "ok");
     });
   }
 

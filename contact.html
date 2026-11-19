@@ -3,12 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Inquiries | Paul Larson</title>
-  <meta name="description" content="Send Paul Larson an inquiry about speaking and workshops, methodology and AI workflow exchange, geopolitical and conflict analysis, or executive leadership and networking.">
+  <title>Connect | Paul Larson</title>
+  <meta name="description" content="Send Paul Larson an inquiry, or follow along on LinkedIn, YouTube, and Substack.">
   <meta name="author" content="Paul Larson">
-  <meta property="og:title" content="Inquiries | Paul Larson">
-  <meta property="og:description" content="Send Paul Larson an inquiry about speaking and workshops, methodology and AI workflow exchange, geopolitical and conflict analysis, or executive leadership and networking.">
+  <meta property="og:title" content="Connect | Paul Larson">
+  <meta property="og:description" content="Send Paul Larson an inquiry, or follow along on LinkedIn, YouTube, and Substack.">
   <meta property="og:type" content="website">
+  <meta property="og:image" content="https://paulrlarson.github.io/assets/paul-larson.jpg">
+  <meta name="twitter:card" content="summary">
   <meta name="theme-color" content="#132239">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,17 +22,17 @@
   <script src="assets/main.js" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link" href="#main">Skip to Content</a>
   <header class="site-header">
     <div class="wrap">
       <a class="wordmark" href="index.html">Paul Larson</a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
       <nav id="site-nav" class="site-nav" aria-label="Main">
         <ul>
-          <li><a href="methodology.html">Practice &amp; Methodology</a></li>
+          <li><a href="methodology.html">Focus Areas</a></li>
           <li><a href="briefings.html">Briefings</a></li>
           <li><a href="about.html">Executive Profile</a></li>
-          <li><a href="contact.html" aria-current="page">Inquiries</a></li>
+          <li><a href="contact.html" aria-current="page">Connect</a></li>
         </ul>
       </nav>
     </div>
@@ -38,32 +40,32 @@
   <main id="main">
     <section class="page-head">
       <div class="wrap">
-        <h1>Inquiries</h1>
-        <p class="lede">Speaking invitations, methodology exchanges, questions about a briefing, and leadership conversations are all welcome. Choose a topic so the inquiry arrives labeled in the subject line.</p>
+        <h1>Connect</h1>
+        <p class="lede">Send an inquiry, or follow along on LinkedIn, YouTube, and Substack.</p>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="inquiry">
       <div class="wrap inquiry-layout">
         <form id="inquiry-form" class="inquiry-form">
           <fieldset>
-            <legend>What is the inquiry about?</legend>
+            <legend>What Is Your Inquiry About?</legend>
             <div class="topic-options">
               <div class="topic-option">
                 <input type="radio" name="topic" id="topic-speaking" value="speaking" required>
-                <label for="topic-speaking"><strong>Speaking &amp; Workshops</strong><span>Guest briefings, panels, and facilitated scenario-planning or operational strategy workshops.</span></label>
+                <label for="topic-speaking"><strong>Speaking &amp; Workshops</strong><span>Guest briefings, panels, and facilitated workshops.</span></label>
               </div>
               <div class="topic-option">
                 <input type="radio" name="topic" id="topic-methodology" value="methodology" required>
-                <label for="topic-methodology"><strong>Methodology &amp; AI Workflow Exchange</strong><span>Comparing approaches to source-auditable research workflows and AI adoption in high-stakes teams.</span></label>
+                <label for="topic-methodology"><strong>Methodology &amp; AI Workflow Exchange</strong><span>Comparing approaches to AI-assisted research.</span></label>
               </div>
               <div class="topic-option">
                 <input type="radio" name="topic" id="topic-conflict" value="conflict" required>
-                <label for="topic-conflict"><strong>Geopolitical &amp; Conflict Analysis</strong><span>Questions about a published briefing, or context on an unfolding conflict or governance crisis.</span></label>
+                <label for="topic-conflict"><strong>Geopolitical &amp; Conflict Analysis</strong><span>Questions about a briefing or an unfolding crisis.</span></label>
               </div>
               <div class="topic-option">
                 <input type="radio" name="topic" id="topic-leadership" value="leadership" required>
-                <label for="topic-leadership"><strong>Executive Leadership &amp; Networking</strong><span>Introductions and conversations about institutional strategy and operational transformation.</span></label>
+                <label for="topic-leadership"><strong>Executive Leadership &amp; Networking</strong><span>Introductions and leadership conversations.</span></label>
               </div>
             </div>
           </fieldset>
@@ -88,34 +90,46 @@
           </div>
 
           <div class="form-actions">
-            <button class="btn btn-dark" type="submit">Open in email app</button>
+            <button class="btn btn-dark" type="submit">Open in Email App</button>
             <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
           </div>
         </form>
 
-        <aside class="contact-aside" aria-label="Other ways to connect">
+        <aside class="contact-aside" aria-label="Email">
           <div class="aside-block">
-            <h2>Email</h2>
-            <p>Prefer to write directly? The address stays hidden from automated scrapers until you ask for it.</p>
-            <button class="btn btn-outline-dark" type="button" data-email-reveal aria-controls="email-out">Show email address</button>
+            <h2>Email Directly</h2>
+            <p>The address stays hidden from scrapers until you ask for it.</p>
+            <button class="btn btn-outline-dark" type="button" data-email-reveal aria-controls="email-out">Show Email Address</button>
             <p id="email-out" class="email-reveal" hidden></p>
           </div>
-          <div class="aside-block">
-            <h2>LinkedIn</h2>
-            <p>Connect with Paul Larson on LinkedIn for professional introductions and updates.</p>
-            <a class="btn btn-outline-dark" href="https://www.linkedin.com/in/paulrlarson" data-linkedin-link target="_blank" rel="noopener">Connect on LinkedIn</a>
-          </div>
-          <div class="aside-block">
-            <h2>YouTube</h2>
-            <p>Watch video explainers from the <span data-series-name></span> series on current conflicts and governance crises.</p>
-            <a class="btn btn-outline-dark" href="https://www.youtube.com/@PaulsPeacePark" data-youtube-link target="_blank" rel="noopener">Subscribe on YouTube</a>
-          </div>
-          <div class="aside-block">
-            <h2>Substack</h2>
-            <p>Subscribe to <span data-series-name></span> on Substack to receive new conflict assessments and companion dossiers by email.</p>
-            <a class="btn btn-outline-dark" href="https://paulspeacepark.substack.com/subscribe" data-substack-subscribe target="_blank" rel="noopener">Subscribe on Substack</a>
-          </div>
         </aside>
+      </div>
+    </section>
+    <section class="section section-raised connect" aria-labelledby="connect-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="connect-title">Follow Along</h2>
+        </div>
+        <div class="connect-grid">
+          <article class="connect-card">
+            <h3>LinkedIn</h3>
+            <p class="connect-id" data-linkedin-display></p>
+            <p class="connect-desc">Career background and professional updates.</p>
+            <a class="btn btn-dark" href="https://www.linkedin.com/in/paulrlarson" data-linkedin-link target="_blank" rel="noopener">Connect on LinkedIn</a>
+          </article>
+          <article class="connect-card">
+            <h3>YouTube</h3>
+            <p class="connect-id" data-youtube-display></p>
+            <p class="connect-desc">Video analyses from the <span data-series-name></span> series.</p>
+            <a class="btn btn-dark" href="https://www.youtube.com/@PaulsPeacePark" data-youtube-link target="_blank" rel="noopener">Subscribe on YouTube</a>
+          </article>
+          <article class="connect-card">
+            <h3>Substack</h3>
+            <p class="connect-id" data-substack-display></p>
+            <p class="connect-desc">Companion articles, delivered by email.</p>
+            <a class="btn btn-dark" href="https://paulspeacepark.substack.com/subscribe" data-substack-subscribe target="_blank" rel="noopener">Subscribe on Substack</a>
+          </article>
+        </div>
       </div>
     </section>
   </main>
@@ -123,7 +137,7 @@
   <footer class="site-footer">
     <div class="footer-base">
       <div class="wrap">
-        <p>&copy; <span data-year>2026</span> Paul Larson, San Francisco, CA. Views expressed on this site and in the <span data-series-name></span> series are Paul Larson's own and do not represent the positions of Amazon Web Services or the U.S. Department of State.</p>
+        <p>&copy; <span data-year>2026</span> Paul Larson, San Francisco, CA. Views are Paul Larson's own and do not represent Amazon Web Services or the U.S. Department of State.</p>
         <div class="footer-links">
           <a href="https://www.linkedin.com/in/paulrlarson" data-linkedin-link target="_blank" rel="noopener">LinkedIn</a>
           <a href="https://www.youtube.com/@PaulsPeacePark" data-youtube-link target="_blank" rel="noopener">YouTube</a>

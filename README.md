@@ -7,10 +7,10 @@ A static website: plain HTML, CSS, and JavaScript with no build step. Any free s
 | File | Purpose |
 | --- | --- |
 | `index.html` | Home page |
-| `methodology.html` | Practice areas and the three methodologies |
-| `briefings.html` | YouTube explainers and Substack dossiers, listed from `site-config.js` |
+| `methodology.html` | The three focus areas: approach, track record, and ways to work together |
+| `briefings.html` | How each briefing is built, then the YouTube analyses and Substack articles listed from `site-config.js` |
 | `about.html` | Executive profile and CV, with a print or save-as-PDF button |
-| `contact.html` | Topic-routed inquiry form |
+| `contact.html` | Connect page: topic-routed inquiry form, plus LinkedIn, YouTube, and Substack |
 | `404.html` | Page shown for a wrong address |
 | `site-config.js` | **The one file to edit for routine updates** |
 | `assets/` | Styles, scripts, the field map graphic, and the favicon |
@@ -58,12 +58,12 @@ In `site-config.js`, copy one briefing block and paste it at the top of the `bri
 ## Optional settings in site-config.js
 
 - **Reimagine Task Force link.** Paste the address into `reimagineUrl` to turn the phrase "Reimagine Task Force" on the profile page into a link. Empty means plain text.
-- **Send inquiries without the visitor's email app.** By default, the inquiry form opens the visitor's email app with the topic, name, and message filled in. To send inquiries straight to your inbox instead, create a form at formspree.io, then paste its endpoint (for example `https://formspree.io/f/abcdwxyz`) into `formspreeEndpoint`. The button text changes to "Send inquiry" automatically.
+- **Send inquiries without the visitor's email app.** By default, the inquiry form opens the visitor's email app with the topic, name, and message filled in. To send inquiries straight to your inbox instead, create a form at formspree.io, then paste its endpoint (for example `https://formspree.io/f/abcdwxyz`) into `formspreeEndpoint`. The button text changes to "Send Inquiry" automatically.
 
 ## Privacy
 
 - No phone number appears anywhere on the site.
-- The email address is stored in two parts in `site-config.js` and is only assembled when a visitor selects "Show email address" or submits the inquiry form, which keeps it away from simple address-harvesting bots.
+- The email address is stored in two parts in `site-config.js` and is only assembled when a visitor selects "Show Email Address" or submits the inquiry form, which keeps it away from simple address-harvesting bots.
 - Videos load from youtube-nocookie.com only after a visitor selects play.
 
 ## Run the checks before publishing

@@ -35,7 +35,7 @@ window.SITE_CONFIG = {
       title: "How a Gold Mine Raid Exposed Pakistan's Taliban Dilemma",
       date: "Nov 2026",
       summary:
-        "Analyzes the November 11 Kohat river-mining ambush, cross-border illicit revenue allegations, and why Islamabad's demand for a written Taliban guarantee runs into verification, political will, and enforcement capacity limits.",
+        "Why Pakistan's demand for a written Taliban guarantee after the Kohat gold-mine ambush runs into limits of verification, political will, and enforcement.",
       youtubeId: "ZDBPRiOpzMs",
       substackUrl: "https://paulspeacepark.substack.com/p/the-gold-economy-behind-the-kohat"
     },
@@ -43,7 +43,7 @@ window.SITE_CONFIG = {
       title: "The Hijacking of the French Protests",
       date: "Nov 2026",
       summary:
-        "Uses timeline and bargaining-power forensics to examine how French national labor unions absorbed a high-school student blockade movement and shifted the negotiation Zone of Possible Agreement (ZOPA) from classrooms to wages and pensions.",
+        "How French national labor unions took over a high school student blockade movement and shifted the bargaining from classrooms to wages and pensions.",
       youtubeId: "9QLxlBL96fQ",
       substackUrl: ""
     }
