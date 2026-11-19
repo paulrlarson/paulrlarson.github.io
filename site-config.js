@@ -19,7 +19,7 @@ window.SITE_CONFIG = {
 
   // Link for "Reimagine Task Force" in the executive profile.
   // Leave empty ("") to show the phrase as plain text.
-  reimagineUrl: "",
+  reimagineUrl: "https://www.mckinsey.com/industries/public-sector/our-insights/reimagining-us-federal-work-for-the-postpandemic-world",
 
   // Email is stored in two parts so simple scrapers do not find a full address.
   emailUser: "larson.paulrichard",

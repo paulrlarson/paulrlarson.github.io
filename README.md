@@ -81,18 +81,27 @@ The first command checks the writing rules (no long dashes, banned words, intern
 
 A free GitHub account is enough. GitHub Pages hosting is included for public repositories at no cost.
 
-**GitHub Pages (recommended)**
+**GitHub Pages with GitHub Desktop (recommended)**
 
-1. Create a free account at github.com.
-2. Create a new public repository named exactly `<your-username>.github.io`, with no README.
-3. In Terminal, from this folder:
-   ```
-   git remote add origin https://github.com/<your-username>/<your-username>.github.io.git
-   git push -u origin main
-   ```
-4. In the repository, open Settings, then Pages, and set the source to "Deploy from a branch", branch `main`, folder `/ (root)`. The site goes live at `https://<your-username>.github.io` within a few minutes.
+GitHub account: `paulrlarson`. Live address once published: https://paulrlarson.github.io
 
-To update the site later: edit files, then run `git add -A`, `git commit -m "Describe the change"`, and `git push`.
+1. Install GitHub Desktop (free) from desktop.github.com and sign in with the `paulrlarson` account.
+2. Choose File, then Add Local Repository, and select this folder.
+3. Select "Publish repository". In the Publish Repository window, change the Name to `paulrlarson.github.io`, clear the "Keep this code private" checkbox, and select Publish Repository.
+4. On github.com, open the `paulrlarson.github.io` repository, then Settings, then Pages. Under "Build and deployment", set Source to "Deploy from a branch" and Branch to `main` and `/ (root)`, then Save (skip this if it is already set). The site goes live within a few minutes.
+
+To update the site later: edit files, then in GitHub Desktop write a short summary, select "Commit to main", then select "Push origin".
+
+**GitHub Pages from Terminal (alternative)**
+
+Create an empty public repository named `paulrlarson.github.io` at github.com/new (no README), then run from this folder:
+
+```
+git remote add origin https://github.com/paulrlarson/paulrlarson.github.io.git
+git push -u origin main
+```
+
+GitHub asks for a personal access token rather than your password when pushing from Terminal, which is why GitHub Desktop is the simpler route. Then complete step 4 above.
 
 **Other free hosts that serve this folder as it is**
 

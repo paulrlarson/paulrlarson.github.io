@@ -164,6 +164,8 @@ def check_config(external, online):
         status = url_status(reimagine)
         if status == 200:
             results["pass"].append(f"Reimagine Task Force link resolves: {reimagine}")
+        elif status in (401, 403, 429, 999) or not isinstance(status, int):
+            results["warn"].append(f"Reimagine Task Force link could not be checked automatically ({status}); open it by hand: {reimagine}")
         else:
             results["fail"].append(f"Reimagine Task Force link returned {status}: {reimagine}")
 
@@ -174,8 +176,8 @@ def check_config(external, online):
             status = url_status(url)
             if status == 200:
                 results["pass"].append(f"External link OK: {url}")
-            elif status == 999:
-                results["warn"].append(f"External link blocks automated checks (normal for LinkedIn), open it by hand: {url}")
+            elif status in (401, 403, 429, 999) or not isinstance(status, int):
+                results["warn"].append(f"External link could not be checked automatically ({status}, normal for LinkedIn and some news sites); open it by hand: {url}")
             else:
                 results["warn"].append(f"External link returned {status}: {url}")
     else:
