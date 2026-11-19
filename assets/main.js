@@ -15,6 +15,7 @@
   }
 
   function trimSlash(url) { return (url || "").replace(/\/+$/, ""); }
+  function displayUrl(url) { return trimSlash(url).replace(/^https?:\/\/(www\.)?/, ""); }
 
   /* ---------- Series name and profile links ---------- */
   function applyConfig() {
@@ -23,6 +24,9 @@
     qsa("[data-substack-link]").forEach(function (a) { a.href = trimSlash(cfg.substackUrl) || "#"; });
     qsa("[data-substack-subscribe]").forEach(function (a) { a.href = trimSlash(cfg.substackUrl) + "/subscribe"; });
     qsa("[data-linkedin-link]").forEach(function (a) { a.href = cfg.linkedinUrl || "#"; });
+    qsa("[data-linkedin-display]").forEach(function (n) { n.textContent = displayUrl(cfg.linkedinUrl); });
+    qsa("[data-youtube-display]").forEach(function (n) { n.textContent = displayUrl(cfg.youtubeUrl); });
+    qsa("[data-substack-display]").forEach(function (n) { n.textContent = displayUrl(cfg.substackUrl); });
     qsa("[data-year]").forEach(function (n) { n.textContent = String(new Date().getFullYear()); });
 
     if (cfg.reimagineUrl) {

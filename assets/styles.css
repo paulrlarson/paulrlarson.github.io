@@ -55,7 +55,7 @@ body {
 
 img, svg { display: block; max-width: 100%; }
 
-h1, h2, h3, h4 {
+h1, h2, h3, h4, h5 {
   font-family: var(--sans);
   font-weight: 600;
   line-height: 1.15;
@@ -391,8 +391,8 @@ a { color: inherit; }
   font-family: var(--serif);
   font-size: var(--step-1);
   color: var(--ink-soft);
-  max-width: 40rem;
-  flex-basis: 100%;
+  flex: 1 0 100%;
+  padding-right: max(0px, calc(100% - 40rem));
 }
 
 .prose {
@@ -720,15 +720,55 @@ a { color: inherit; }
   .pillar, .pillar:nth-child(even) { padding: 1.5rem 0; border-left: 0; }
 }
 
-.cv { display: grid; gap: clamp(2.5rem, 5vw, 3.5rem); }
-.cv-section {
-  display: grid;
-  grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
-  gap: 1rem clamp(1.5rem, 4vw, 3rem);
-  border-top: 1px solid var(--rule-strong);
-  padding-top: 1.25rem;
+.cv { display: grid; gap: clamp(3rem, 6vw, 4.5rem); }
+
+/* Major CV heading: Professional Experience, Education, Certifications, Recognition */
+.cv-block { border-top: 3px solid var(--navy-900); padding-top: 1.1rem; }
+.cv-title {
+  font-size: var(--step-3);
+  color: var(--navy-900);
+  margin-bottom: 1.5rem;
 }
-.cv-section > h3 { font-size: 1.125rem; }
+
+/* Related sub-section in a tinted box: Assignments Abroad, International Educational Experience */
+.cv-sub {
+  margin-top: 2rem;
+  padding: 1.5rem clamp(1.1rem, 3vw, 2rem) 1.25rem;
+  background: #E9EDF2;
+  border-left: 4px solid var(--brass);
+  border-radius: var(--radius);
+}
+.cv-sub-title {
+  font-size: var(--step-2);
+  color: var(--navy-900);
+  margin-bottom: 1.1rem;
+}
+.cv-sub .ledger > li { border-bottom-color: #CDD5DF; }
+
+/* Topic or organization rows: label on the left, entries on the right */
+.cv-group {
+  display: grid;
+  grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+  gap: 0.5rem clamp(1.25rem, 3vw, 2.5rem);
+  padding-block: 1.1rem;
+  border-top: 1px solid var(--rule-strong);
+}
+.cv-group:first-of-type { border-top: 0; padding-top: 0; }
+.cv-sub .cv-group { border-top-color: #C3CCD8; }
+.cv-group .ledger > li:last-child,
+.cv-sub .ledger > li:last-child { border-bottom: 0; padding-bottom: 0; }
+.cv-group-label {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--brass-ink);
+  letter-spacing: 0;
+  padding-top: 0.1rem;
+}
+@media (max-width: 760px) {
+  .cv-group { grid-template-columns: 1fr; }
+}
+
 .ledger { list-style: none; margin: 0; padding: 0; }
 .ledger > li {
   display: grid;
@@ -754,20 +794,48 @@ a { color: inherit; }
   font-weight: 400;
   color: var(--ink-soft);
 }
-.ledger-group + .ledger-group { margin-top: 1.75rem; }
-.ledger-group h4 {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--navy-700);
-  margin-bottom: 0.75rem;
-}
 .ledger.plain > li { grid-template-columns: 1fr; }
 @media (max-width: 760px) {
-  .cv-section { grid-template-columns: 1fr; }
   .ledger > li { grid-template-columns: 1fr; gap: 0.15rem; }
 }
 
 .print-only { display: none; }
+
+/* ---------- Follow and connect ---------- */
+
+.connect-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+}
+.connect-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1.5rem 1.75rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--brass);
+  border-radius: var(--radius);
+}
+.connect-card h3 { font-size: var(--step-2); }
+.connect-id {
+  margin-top: 0.3rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  word-break: break-word;
+}
+.connect-desc {
+  margin-top: 0.9rem;
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  flex: 1;
+}
+.connect-card .btn { margin-top: 1.25rem; align-self: flex-start; }
+@media (max-width: 860px) {
+  .connect-grid { grid-template-columns: 1fr; }
+}
 
 /* ---------- Inquiries ---------- */
 
@@ -938,18 +1006,18 @@ a { color: inherit; }
   .pillar:nth-child(even) { padding-left: 10pt; }
   .pillar h3 { font-size: 10.5pt; }
   .pillar p { font-size: 9.5pt; line-height: 1.4; margin-top: 3pt; }
-  .cv { gap: 12pt; }
-  .cv-section { grid-template-columns: 9rem 1fr; padding-top: 6pt; break-inside: auto; }
-  .cv-section > h3 { font-size: 10.5pt; }
+  .cv { gap: 14pt; }
+  .cv-block { border-top: 2px solid #000000; padding-top: 6pt; }
+  .cv-title { font-size: 13pt; margin-bottom: 6pt; color: #000000; }
+  .cv-sub { margin-top: 8pt; padding: 6pt 0 2pt 10pt; background: none; border-left: 3px solid #999999; }
+  .cv-sub-title { font-size: 11pt; margin-bottom: 4pt; color: #000000; }
+  .cv-group { grid-template-columns: 9rem 1fr; padding-block: 5pt; break-inside: avoid; }
+  .cv-group-label { font-size: 9pt; color: #000000; }
   .ledger > li { padding-block: 3pt; grid-template-columns: 7rem 1fr; break-inside: avoid; }
   .ledger .when { font-size: 8.5pt; color: #333333; }
   .ledger .what { font-size: 9.5pt; }
   .ledger .where { font-size: 9.5pt; color: #333333; }
-  .ledger-group + .ledger-group { margin-top: 6pt; }
-  .ledger-group h4 { font-size: 9pt; margin-bottom: 3pt; color: #000000; break-after: avoid; }
-  .ledger-group { break-inside: avoid; }
-  .section-head { break-after: avoid; }
-  #cv { break-before: page; border-top: 0; }
+  .connect { display: none; }
   .print-contact { font-size: 9.5pt; margin-top: 4pt; color: #222222; }
   a { color: #000000; text-decoration: none; }
 }
