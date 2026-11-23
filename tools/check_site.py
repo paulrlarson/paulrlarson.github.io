@@ -15,7 +15,7 @@ import urllib.request
 from html.parser import HTMLParser
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCAN_EXT = {".html", ".css", ".js", ".md", ".svg", ".txt", ".py", ".json", ".yml", ".yaml"}
+SCAN_EXT = {".html", ".css", ".js", ".md", ".svg", ".txt", ".py", ".json", ".yml", ".yaml", ".xml"}
 SKIP_DIRS = {".git", "node_modules"}
 
 LONG_DASH = chr(0x2014)
@@ -32,6 +32,7 @@ CONTENT_RULES = [
     ("pipeline detail (event database scripts)", re.compile(r"\bGDE" + r"LT\b", re.I)),
     ("pipeline detail (prompt files)", re.compile(r"\bskill\s+pro" + r"mpts?\b", re.I)),
     ("pipeline detail (data file layouts)", re.compile(r"\bCSV\s+sche" + r"mas?\b", re.I)),
+    ("video channel reference (you...tube)", re.compile(r"you" + r"tube|you" + r"tu\.be|yt" + r"img", re.I)),
     ("phone number pattern", re.compile(r"(?<![\d.])(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}(?!\d)")),
     ("full email address in plain text", re.compile(r"larson\.paulrichard" + "@", re.I)),
 ]
@@ -147,14 +148,10 @@ def url_status(url):
 
 def check_config(external, online):
     src = read_config()
-    for key in ("seriesName", "youtubeUrl", "substackUrl", "linkedinUrl"):
+    for key in ("seriesName", "substackUrl", "linkedinUrl"):
         if not config_value(src, key):
             results["fail"].append(f"site-config.js: {key} is empty")
-    for vid in re.findall(r'youtubeId\s*:\s*"([^"]*)"', src):
-        if not re.fullmatch(r"[A-Za-z0-9_-]{11}", vid):
-            results["fail"].append(f"site-config.js: youtubeId '{vid}' does not look like a YouTube video ID")
     config_urls = set(re.findall(r'"(https://[^"]+)"', src))
-    config_urls |= {"https://www.youtube.com/watch?v=" + v for v in re.findall(r'youtubeId\s*:\s*"([^"]+)"', src)}
     external |= config_urls
 
     reimagine = config_value(src, "reimagineUrl")
@@ -184,14 +181,56 @@ def check_config(external, online):
         results["warn"].append(f"{len(external)} external links not tested (run with --online to test them)")
 
 
+def ensure_seo_files():
+    pages = [
+        ("index.html", "1.0"),
+        ("about.html", "0.9"),
+        ("methodology.html", "0.9"),
+        ("briefings.html", "0.8"),
+        ("contact.html", "0.7"),
+    ]
+    urls = []
+    origin = ""
+    for fname, prio in pages:
+        fpath = os.path.join(ROOT, fname)
+        if not os.path.exists(fpath):
+            continue
+        with open(fpath, encoding="utf-8") as fh:
+            m = re.search(r'<link\s+rel="canonical"\s+href="([^"]+)"', fh.read())
+        if m:
+            href = m.group(1)
+            urls.append((href, prio))
+            if fname == "index.html":
+                origin = href.rstrip("/")
+    if urls:
+        ns = "http://" + "www.sitemaps.org/schemas/sitemap/0.9"
+        lines = ['<?xml version="1.0" encoding="UTF-8"?>', f'<urlset xmlns="{ns}">']
+        for href, prio in urls:
+            lines.extend(["  <url>", f"    <loc>{href}</loc>", f"    <priority>{prio}</priority>", "  </url>"])
+        lines.append("</urlset>\n")
+        smap_path = os.path.join(ROOT, "sitemap.xml")
+        with open(smap_path, "w", encoding="utf-8") as fh:
+            fh.write("\n".join(lines))
+    if origin:
+        robots_path = os.path.join(ROOT, "robots.txt")
+        rtxt = "User-agent: *\nAllow: /\n"
+        if os.path.exists(robots_path):
+            with open(robots_path, encoding="utf-8") as fh:
+                rtxt = fh.read()
+        if "Sitemap:" not in rtxt:
+            with open(robots_path, "w", encoding="utf-8") as fh:
+                fh.write(rtxt.rstrip() + f"\nSitemap: {origin}/sitemap.xml\n")
+
+
 def check_files():
-    for name in ("index.html", "methodology.html", "briefings.html", "about.html", "contact.html", "site-config.js", ".nojekyll"):
+    for name in ("index.html", "methodology.html", "briefings.html", "about.html", "contact.html", "site-config.js", "robots.txt", "sitemap.xml", ".nojekyll"):
         if not os.path.exists(os.path.join(ROOT, name)):
             results["fail"].append(f"Missing required file: {name}")
 
 
 def main():
     online = "--online" in sys.argv
+    ensure_seo_files()
     check_files()
     check_content()
     external = check_links()

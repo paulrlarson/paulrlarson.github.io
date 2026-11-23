@@ -17,17 +17,146 @@
   function trimSlash(url) { return (url || "").replace(/\/+$/, ""); }
   function displayUrl(url) { return trimSlash(url).replace(/^https?:\/\/(www\.)?/, ""); }
 
-  /* ---------- Series name and profile links ---------- */
+  function emailAddress() {
+    if (!cfg.emailUser || !cfg.emailDomain) return "";
+    return cfg.emailUser + "@" + cfg.emailDomain;
+  }
+
+  function siteOrigin() {
+    var ogImg = document.querySelector('meta[property="og:image"]');
+    if (ogImg && ogImg.content) {
+      try { return new URL(ogImg.content).origin; } catch (e) {}
+    }
+    if (window.location && /^https?:/.test(window.location.protocol)) {
+      return window.location.origin;
+    }
+    return "";
+  }
+
+  /* ---------- Canonical URLs, Open Graph URL, and Person Schema ---------- */
+  function setupSeoAndSchema() {
+    var noindex = document.querySelector('meta[name="robots"][content*="noindex"]');
+    if (noindex) return;
+
+    var origin = siteOrigin();
+    if (!origin) return;
+
+    var path = (window.location && window.location.pathname) ? window.location.pathname : "/";
+    var fileMatch = path.match(/\/([^\/]+\.html)$/);
+    var pageFile = fileMatch ? fileMatch[1] : "index.html";
+    var canonicalHref = pageFile === "index.html" ? (origin + "/") : (origin + "/" + pageFile);
+
+    var canon = document.querySelector('link[rel="canonical"]');
+    if (!canon) {
+      canon = el("link", { rel: "canonical", href: canonicalHref });
+      document.head.appendChild(canon);
+    } else {
+      canon.setAttribute("href", canonicalHref);
+    }
+
+    var ogUrl = document.querySelector('meta[property="og:url"]');
+    if (!ogUrl) {
+      ogUrl = el("meta", { property: "og:url", content: canonicalHref });
+      document.head.appendChild(ogUrl);
+    } else {
+      ogUrl.setAttribute("content", canonicalHref);
+    }
+
+    if (!document.querySelector('script[type="application/ld+json"]')) {
+      var ogImg = document.querySelector('meta[property="og:image"]');
+      var sameAs = [];
+      if (cfg.linkedinUrl) sameAs.push(cfg.linkedinUrl);
+      if (cfg.substackUrl) sameAs.push(trimSlash(cfg.substackUrl));
+
+      var person = {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Paul Larson",
+        "url": origin + "/",
+        "image": ogImg ? ogImg.content : "",
+        "jobTitle": "Senior Program Manager",
+        "description": "Institutional strategy, geopolitical and operational risk prioritization, public-sector innovation, and AI-enabled decision support.",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "San Francisco",
+          "addressRegion": "CA",
+          "addressCountry": "US"
+        },
+        "worksFor": {
+          "@type": "Organization",
+          "name": "Amazon Web Services (AWS)"
+        },
+        "alumniOf": [
+          { "@type": "CollegeOrUniversity", "name": "George Mason University" },
+          { "@type": "CollegeOrUniversity", "name": "Drake University" }
+        ],
+        "knowsAbout": [
+          "Geopolitical Risk",
+          "Conflict Analysis",
+          "Public-Sector Innovation",
+          "Institutional Strategy",
+          "Enterprise Risk Management",
+          "Decision Support Systems",
+          "Lean Six Sigma"
+        ],
+        "sameAs": sameAs
+      };
+
+      var ldData = pageFile === "about.html"
+        ? { "@context": "https://schema.org", "@type": "ProfilePage", "url": canonicalHref, "mainEntity": person }
+        : person;
+
+      var ldScript = el("script", { type: "application/ld+json" });
+      ldScript.textContent = JSON.stringify(ldData);
+      document.head.appendChild(ldScript);
+    }
+  }
+
+  function copyToClipboard(text, onDone) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        onDone(true);
+      }).catch(function () {
+        fallbackCopy(text, onDone);
+      });
+      return;
+    }
+    fallbackCopy(text, onDone);
+  }
+
+  function fallbackCopy(text, onDone) {
+    try {
+      var ta = el("textarea", { "class": "visually-hidden", "aria-hidden": "true" });
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      onDone(Boolean(ok));
+    } catch (err) {
+      onDone(false);
+    }
+  }
+
+  /* ---------- Series name, profile links, and print contact ---------- */
   function applyConfig() {
     qsa("[data-series-name]").forEach(function (n) { n.textContent = cfg.seriesName || ""; });
-    qsa("[data-youtube-link]").forEach(function (a) { a.href = cfg.youtubeUrl || "#"; });
     qsa("[data-substack-link]").forEach(function (a) { a.href = trimSlash(cfg.substackUrl) || "#"; });
     qsa("[data-substack-subscribe]").forEach(function (a) { a.href = trimSlash(cfg.substackUrl) + "/subscribe"; });
     qsa("[data-linkedin-link]").forEach(function (a) { a.href = cfg.linkedinUrl || "#"; });
     qsa("[data-linkedin-display]").forEach(function (n) { n.textContent = displayUrl(cfg.linkedinUrl); });
-    qsa("[data-youtube-display]").forEach(function (n) { n.textContent = displayUrl(cfg.youtubeUrl); });
     qsa("[data-substack-display]").forEach(function (n) { n.textContent = displayUrl(cfg.substackUrl); });
     qsa("[data-year]").forEach(function (n) { n.textContent = String(new Date().getFullYear()); });
+
+    var addr = emailAddress();
+    var siteHost = displayUrl(siteOrigin());
+    qsa("[data-print-contact]").forEach(function (n) {
+      var parts = ["San Francisco, CA"];
+      if (addr) parts.push(addr);
+      if (cfg.linkedinUrl) parts.push(displayUrl(cfg.linkedinUrl));
+      if (siteHost) parts.push(siteHost);
+      n.textContent = parts.join("  |  ");
+    });
 
     if (cfg.reimagineUrl) {
       qsa("[data-reimagine]").forEach(function (span) {
@@ -37,70 +166,45 @@
     }
   }
 
-  /* ---------- Briefings ---------- */
-  function thumb(id) {
-    var img = el("img", {
-      src: "https://i.ytimg.com/vi/" + id + "/maxresdefault.jpg",
-      alt: "",
-      loading: "lazy",
-      decoding: "async"
-    });
-    img.addEventListener("error", function onErr() {
-      img.removeEventListener("error", onErr);
-      img.src = "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg";
-    });
-    return img;
-  }
-
-  function playInline(media, b) {
-    media.innerHTML = "";
-    var iframe = el("iframe", {
-      src: "https://www.youtube-nocookie.com/embed/" + b.youtubeId + "?autoplay=1&rel=0",
-      title: b.title,
-      allow: "autoplay; encrypted-media; picture-in-picture; fullscreen",
-      allowfullscreen: "",
-      referrerpolicy: "strict-origin-when-cross-origin"
-    });
-    media.appendChild(iframe);
-    iframe.focus();
-  }
-
+  /* ---------- Written Analytical Briefings ---------- */
   function briefingNode(b) {
-    var art = el("article", { "class": "briefing" });
-
-    var media = el("div", { "class": "briefing-media" });
-    if (b.youtubeId) {
-      media.appendChild(thumb(b.youtubeId));
-      var play = el("button", { type: "button", "class": "play-btn", "aria-label": "Play video: " + b.title });
-      play.addEventListener("click", function () { playInline(media, b); });
-      media.appendChild(play);
+    var art = el("article", { "class": "briefing-card" });
+    var metaParts = [];
+    if (b.category) metaParts.push(b.category);
+    if (b.date) metaParts.push(b.date);
+    if (metaParts.length) {
+      art.appendChild(el("p", { "class": "briefing-meta" }, metaParts.join("  ·  ")));
     }
-    art.appendChild(media);
 
-    var body = el("div", { "class": "briefing-body" });
-    if (b.date) body.appendChild(el("p", { "class": "briefing-date" }, b.date));
-    body.appendChild(el("h3", null, b.title));
-    if (b.summary) body.appendChild(el("p", { "class": "briefing-summary" }, b.summary));
+    var targetUrl = b.substackUrl || cfg.substackUrl || "";
+    var h3 = el("h3", null);
+    if (targetUrl) {
+      h3.appendChild(el("a", {
+        href: targetUrl,
+        target: "_blank",
+        rel: "noopener",
+        "class": "briefing-title-link"
+      }, b.title));
+    } else {
+      h3.textContent = b.title;
+    }
+    art.appendChild(h3);
 
-    var links = el("p", { "class": "briefing-links" });
-    if (b.youtubeId) {
+    if (b.summary) {
+      art.appendChild(el("p", { "class": "briefing-summary" }, b.summary));
+    }
+
+    if (targetUrl) {
+      var links = el("p", { "class": "briefing-links" });
+      var isDirectPost = b.substackUrl && b.substackUrl.indexOf("/p/") !== -1;
       links.appendChild(el("a", {
         "class": "text-link",
-        href: "https://www.youtube.com/watch?v=" + b.youtubeId,
+        href: targetUrl,
         target: "_blank",
         rel: "noopener"
-      }, "Watch on YouTube"));
+      }, isDirectPost ? "Read the Briefing on Substack" : "Read on Substack"));
+      art.appendChild(links);
     }
-    if (b.substackUrl) {
-      links.appendChild(el("a", {
-        "class": "text-link",
-        href: b.substackUrl,
-        target: "_blank",
-        rel: "noopener"
-      }, "Read the Companion Article on Substack"));
-    }
-    body.appendChild(links);
-    art.appendChild(body);
     return art;
   }
 
@@ -115,31 +219,53 @@
   }
 
   /* ---------- Email (assembled only on request) ---------- */
-  function emailAddress() {
-    if (!cfg.emailUser || !cfg.emailDomain) return "";
-    return cfg.emailUser + "@" + cfg.emailDomain;
+  function revealEmailElement(out) {
+    var addr = emailAddress();
+    if (!out || !addr) return addr;
+    out.innerHTML = "";
+    out.appendChild(el("a", { href: "mailto:" + addr, "class": "text-link" }, addr));
+    out.hidden = false;
+    qsa("[data-email-reveal]").forEach(function (b) { b.hidden = true; });
+    return addr;
   }
 
   function setupEmail() {
+    var out = document.getElementById("email-out");
+    var copyStatus = document.getElementById("email-copy-status");
+
     qsa("[data-email-reveal]").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        var out = document.getElementById(btn.getAttribute("aria-controls"));
-        if (!out) return;
-        var addr = emailAddress();
-        out.innerHTML = "";
-        out.appendChild(el("a", { href: "mailto:" + addr, "class": "text-link" }, addr));
-        out.hidden = false;
-        btn.hidden = true;
+        revealEmailElement(out);
+      });
+    });
+
+    qsa("[data-email-copy]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var addr = revealEmailElement(out);
+        if (!addr) return;
+        copyToClipboard(addr, function (ok) {
+          if (copyStatus) {
+            copyStatus.textContent = ok
+              ? "Copied " + addr + " to clipboard."
+              : "Email shown above. Select and copy it directly.";
+            copyStatus.className = "form-status " + (ok ? "is-ok" : "is-error");
+          }
+          var orig = btn.textContent;
+          if (ok) {
+            btn.textContent = "Copied";
+            setTimeout(function () { btn.textContent = orig; }, 2200);
+          }
+        });
       });
     });
   }
 
   /* ---------- Inquiry form ---------- */
   var TOPICS = {
+    leadership: "Advisory, Strategy & Institutional Roles",
     speaking: "Speaking & Workshops",
-    methodology: "Methodology & AI Workflow Exchange",
     conflict: "Geopolitical & Conflict Analysis",
-    leadership: "Executive Leadership & Networking"
+    methodology: "Methodology & AI Workflow Exchange"
   };
 
   function setupInquiry() {
@@ -158,13 +284,15 @@
     }
 
     function setStatus(msg, kind) {
-      status.textContent = msg;
+      status.innerHTML = "";
+      status.appendChild(document.createTextNode(msg));
       status.className = "form-status" + (kind ? " is-" + kind : "");
     }
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var data = new FormData(form);
+      if (data.get("_gotcha")) return;
       var topicKey = data.get("topic");
       if (!topicKey) {
         setStatus("Choose an inquiry topic first.", "error");
@@ -193,24 +321,38 @@
           form.reset();
           setStatus("Inquiry sent. Paul Larson will reply to " + reply + ".", "ok");
         }).catch(function () {
-          setStatus("The inquiry did not send. Check your connection and select Send Inquiry again, or use Show Email Address to write directly.", "error");
+          setStatus("The inquiry did not send. Check your connection and select Send Inquiry again, or use Copy Email Address to write directly.", "error");
         }).then(function () { submitBtn.disabled = false; });
         return;
       }
 
+      var addr = emailAddress();
       var body = message + "\n\n" +
         "Name: " + name + "\n" +
         (org ? "Organization: " + org + "\n" : "") +
         "Reply to: " + reply + "\n" +
         "Topic: " + topic;
-      window.location.href = "mailto:" + emailAddress() +
+      window.location.href = "mailto:" + addr +
         "?subject=" + encodeURIComponent(subject) +
         "&body=" + encodeURIComponent(body);
-      setStatus("Your email app should open with the inquiry filled in. If it does not, use Show Email Address to write directly.", "ok");
+
+      status.innerHTML = "";
+      status.className = "form-status is-ok";
+      status.appendChild(document.createTextNode("Opening your email app. Using webmail instead? "));
+      var copyFallback = el("button", { type: "button", "class": "inline-copy-btn" }, "Copy formatted message & email address");
+      copyFallback.addEventListener("click", function () {
+        var fullClip = "To: " + addr + "\nSubject: " + subject + "\n\n" + body;
+        copyToClipboard(fullClip, function (ok) {
+          copyFallback.textContent = ok
+            ? "Copied message and " + addr + " to clipboard"
+            : "Use Copy Email Address on the right";
+        });
+      });
+      status.appendChild(copyFallback);
     });
   }
 
-  /* ---------- Field map tooltips ---------- */
+  /* ---------- Accessible field map tooltips ---------- */
   function setupMap() {
     var canvas = document.querySelector(".field-map-canvas");
     if (!canvas) return;
@@ -231,10 +373,11 @@
       tip.style.left = x + "px";
       tip.style.top = y + "px";
       tip.classList.add("is-visible");
-      if (active) active.classList.remove("is-active");
+      if (active && active !== pin) active.classList.remove("is-active");
       active = pin;
       pin.classList.add("is-active");
     }
+
     function hide() {
       tip.classList.remove("is-visible");
       if (active) active.classList.remove("is-active");
@@ -244,9 +387,20 @@
     qsa(".pin", canvas).forEach(function (pin) {
       pin.addEventListener("mouseenter", function () { show(pin); });
       pin.addEventListener("mouseleave", hide);
+      pin.addEventListener("focus", function () { show(pin); });
+      pin.addEventListener("blur", hide);
       pin.addEventListener("click", function (e) {
         e.stopPropagation();
         if (active === pin) hide(); else show(pin);
+      });
+      pin.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          e.stopPropagation();
+          show(pin);
+        } else if (e.key === "Escape") {
+          hide();
+        }
       });
     });
     document.addEventListener("click", hide);
@@ -269,6 +423,7 @@
     });
   }
 
+  setupSeoAndSchema();
   applyConfig();
   renderBriefings();
   setupEmail();
