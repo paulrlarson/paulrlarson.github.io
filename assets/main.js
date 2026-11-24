@@ -75,7 +75,7 @@
         "url": origin + "/",
         "image": ogImg ? ogImg.content : "",
         "jobTitle": "Senior Program Manager",
-        "description": "Institutional strategy, geopolitical and operational risk prioritization, public-sector innovation, and AI-enabled decision support.",
+        "description": "Helping organizations and governments accomplish their missions through geopolitical and strategic risk prioritization, methodical innovation and program delivery, and source-traceable decision support.",
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "San Francisco",
@@ -93,8 +93,8 @@
         "knowsAbout": [
           "Geopolitical Risk",
           "Conflict Analysis",
-          "Public-Sector Innovation",
-          "Institutional Strategy",
+          "Strategic Innovation",
+          "Program Management",
           "Enterprise Risk Management",
           "Decision Support Systems",
           "Lean Six Sigma"
